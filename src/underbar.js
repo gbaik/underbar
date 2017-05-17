@@ -186,13 +186,29 @@
 
   // Determine whether all of the elements match a truth test.
   _.every = function(collection, iterator) {
-    // TIP: Try re-using reduce() here.
+    return _.reduce(collection, (allPassed, item) => {
+      // return allPassed && !!iterator(item);
+      if (iterator === undefined) {
+        return allPassed && !!_.identity(item);
+      } else {
+        return allPassed && !!iterator(item);
+      }
+    }, true);
   };
+
 
   // Determine whether any of the elements pass a truth test. If no iterator is
   // provided, provide a default one
   _.some = function(collection, iterator) {
     // TIP: There's a very clever way to re-use every() here.
+    
+    return _.reduce(collection, (anyPassed, item) => {
+       if (iterator === undefined) {
+        return anyPassed || !!_.identity(item);
+      } else {
+        return anyPassed || !!iterator(item);
+      }
+    }, false);
   };
 
 
@@ -207,19 +223,37 @@
   // object(s).
   //
   // Example:
-  //   var obj1 = {key1: "something"};
-  //   _.extend(obj1, {
-  //     key2: "something new",
-  //     key3: "something else new"
-  //   }, {
-  //     bla: "even more stuff"
-  //   }); // obj1 now contains key1, key2, key3 and bla
-  _.extend = function(obj) {
+    // var obj1 = {key1: "something"};
+    // _.extend(obj1, {
+    //   key2: "something new",
+    //   key3: "something else new"
+    // }, {
+    //   bla: "even more stuff"
+    // }); // obj1 now contains key1, key2, key3 and bla
+  _.extend = function(obj1, obj2, obj3) {
+    if (obj3 !== undefined) {
+      for (let key in obj3) {
+        obj2[key] = obj3[key];
+      }
+    }
+    for (let key in obj2) {
+      obj1[key] = obj2[key];
+    }
+    return obj1;
   };
 
   // Like extend, but doesn't ever overwrite a key that already
   // exists in obj
   _.defaults = function(obj) {
+    _.each(Array.from(arguments).slice(1), object => {
+      _.each(object, (prop, key) => {
+        // obj[key] === undefined && (obj[key] = prop);
+        if(obj[key] === undefined){
+          obj[key] = prop
+        }
+      });
+    });
+    return obj;
   };
 
 
