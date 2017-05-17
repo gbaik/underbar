@@ -157,16 +157,15 @@
   //     return total + number * number;
   //   }); // should be 5, regardless of the iterator function passed in
   //          No accumulator is given so the first element is used.
-  _.reduce = function(collection, iterator, currentValue) {
-    // debugger
-    let accumulator = currentValue;
+  _.reduce = function(collection, iterator, initialValue) {
+    let accumulator = initialValue;
     let initializing = accumulator === undefined;
-    _.each(collection, (collection, currentValue, currentIndexOrValue, accumulator) => {
+    _.each(collection, (currentValue, currentIndexOrValue, iteratedCollection) => {
       if (initializing) {
         initializing = false;
-        accumulator = collection[0];
+        accumulator = currentValue;
       } else {
-        accumulator = iterator(collection, currentValue, currentIndexOrValue, accumulator);
+        accumulator = iterator(accumulator, currentValue, currentIndexOrValue, iteratedCollection);
       }
     });
     return accumulator;
